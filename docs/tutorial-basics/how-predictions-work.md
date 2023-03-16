@@ -35,6 +35,8 @@ Sentence: "George Washington went to Washington ." → ["George Washington"/PER,
 Showing us that two entities are labeled in this sentence: "George Washington" as PER (person) and "Washington"
 as LOC (location.)
 
+## Getting the predictions
+
 A common question that gets asked is **how to access these predictions directly**. You can do this by using
 the `get_labels()` method to iterate over all predictions:
 
@@ -51,6 +53,8 @@ Span[4:5]: "Washington" → LOC (0.9942)
 
 As you can see, each entity is printed, together with the predicted class. 
 The confidence of the prediction is indicated as a score in brackets.
+
+## Values for each prediction
 
 For each prediction, you can even **directly access** the label value, it's score and the entity text:  
 
