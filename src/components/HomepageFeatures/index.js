@@ -8,7 +8,7 @@ const FeatureList = [
     Svg: require('@site/static/img/undraw_proud_coder_re_exuy.svg').default,
     description: (
       <>
-        State-of-the-art NLP with just a few lines of code! Find entities, detect sentiment, and more → demo!
+        State-of-the-art NLP with just a few lines of code! Find entities, detect sentiment, and more → <a href="demo">check out our demo</a>!
       </>
     ),
   },
