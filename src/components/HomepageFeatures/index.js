@@ -5,24 +5,24 @@ import styles from './styles.module.css';
 const FeatureList = [
   {
     title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_file_analysis_8k9b.svg').default,
+    Svg: require('@site/static/img/undraw_proud_coder_re_exuy.svg').default,
     description: (
       <>
-        Just a few lines of code to tag your text! Find entities (→ demo), detect sentiment (→ demo), and more.
+        State-of-the-art NLP with just a few lines of code! Find entities, detect sentiment, and more → demo!
       </>
     ),
   },
   {
-    title: 'State-of-the-art',
-    Svg: require('@site/static/img/undraw_alien_science_re_0f8q.svg').default,
+    title: 'Huge Community',
+    Svg: require('@site/static/img/undraw_social_friends_re_7uaa.svg').default,
     description: (
       <>
-        Our models give state-of-the-art accuracy and are constantly improved upon. 
+        With a community of ~200 code contributors, Flair is used in hundreds of companies, over <a href="https://github.com/flairNLP/flair/network/dependents">2,000 open source projects</a> , and over 2,000 research papers!
       </>
     ),
   },
   {
-    title: 'Free!',
+    title: 'Open Source and Free',
     Svg: require('@site/static/img/undraw_fun_moments_2vha.svg').default,
     description: (
       <>

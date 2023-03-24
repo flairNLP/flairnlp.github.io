@@ -6,6 +6,10 @@ description: How to do sentiment analysis on your text
 
 # Tagging sentiment
 
+This tutorials shows you how to do sentiment analysis in Flair.
+
+## Tagging sentiment with our standard model​
+
 Our standard sentiment analysis model uses distilBERT embeddings and was trained over a mix of corpora, notably
 the Amazon review corpus, and can thus handle a variety of domains and language.
 
@@ -35,7 +39,7 @@ Sentence[8]: "This movie is not at all bad." → POSITIVE (0.9929)
 
 Showing us that the sentence overall is tagged to be of POSITIVE sentiment. 
 
-## Tagging Sentiment - Fast
+## Tagging sentiment with our fast model​
 
 We also offer an RNN-based variant which is faster but less accurate. Use it like this: 
 
@@ -65,85 +69,6 @@ Sentence[6]: "This movie is very bad." → NEGATIVE (0.9999)
 This indicates that the sentence is of NEGATIVE sentiment. As you can see, its the same code as above, just loading the
 '**sentiment-fast**' model instead of '**sentiment**'.
 
-
-## Understanding and Accessing Annotations (important!)
-
-You can access each prediction individually using the `get_labels()` method. 
-
-```python
-from flair.nn import Classifier
-from flair.data import Sentence
-
-# load the model
-tagger = Classifier.load('sentiment')
-
-# make a sentence
-sentence = Sentence('This movie is not at all bad.')
-
-# predict NER tags
-tagger.predict(sentence)
-```
-
-Use the `get_labels()` method to iterate over all predictions. Direct access each label's value (predicted tag)
-and its confidence score.
-
-```python
-# Use the `get_labels()` method to iterate over all predictions. 
-for label in sentence.get_labels():
-    print(label)
-    # print label value and score
-    print(f'label.value is: "{label.value}"')
-    print(f'label.score is: "{label.score}"')
-```
-
-Since there is only one prediction, this should print:
-
-```console
-Sentence[8]: "This movie is not at all bad." → POSITIVE (0.9929)
-label.value is: "POSITIVE"
-label.score is: "0.9928739070892334"
-```
-
-
-## Tagging a Whole Text Corpus
-
-Often, you may want to tag an entire text corpus. In this case, you need to split the corpus into sentences and pass a
-list of `Sentence` objects to the `.predict()` method.
-
-For instance, you can use the sentence splitter of segtok to split your text:
-
-```python
-from flair.nn import Classifier
-from flair.splitter import SegtokSentenceSplitter
-
-# example text with many sentences
-text = "I first thought it was great. Then I realized it's terrible. But I came to the conclusion that it's great."
-
-# initialize sentence splitter
-splitter = SegtokSentenceSplitter()
-
-# use splitter to split text into list of sentences
-sentences = splitter.split(text)
-
-# predict tags for sentences
-tagger = Classifier.load('sentiment')
-tagger.predict(sentences)
-
-# iterate through sentences and print predicted labels
-for sentence in sentences:
-    print(sentence)
-```
-
-This should print: 
-
-```console
-Sentence[7]: "I first thought it was great." → POSITIVE (0.6549)
-Sentence[7]: "Then I realized it's terrible." → NEGATIVE (1.0)
-Sentence[11]: "But I came to the conclusion that it's great." → POSITIVE (0.9846)
-```
-
-Using the `mini_batch_size` parameter of the `.predict()` method, you can set the size of mini batches passed to the
-tagger. Depending on your resources, you might want to play around with this parameter to optimize speed.
 
 ### List of Sentiment Models
 

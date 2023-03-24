@@ -9,8 +9,9 @@ description: How to do entity linking in Flair
 As of Flair 0.12 we ship an **experimental entity linker** trained on the [Zelda dataset](https://github.com/flairNLP/zelda). The linker does not only
 tag entities, but also attempts to link each entity to the corresponding Wikipedia URL if one exists. 
 
-To illustrate, let's use a short example text with two mentions of "Barcelona". The first refers to the football club
-"FC Barcelona", the second to the city "Barcelona".
+## Example 1: Entity linking on a single sentence​
+
+To illustrate, let's use the example sentence "_Kirk and Spock met on the Enterprise._":
 
 ```python
 from flair.nn import Classifier
@@ -20,81 +21,39 @@ from flair.data import Sentence
 tagger = Classifier.load('linker')
 
 # make a sentence
-sentence = Sentence('Bayern played against Barcelona. The match took place in Barcelona.')
+sentence = Sentence('Kirk and Spock met on the Enterprise.')
 
-# predict NER tags
+# predict entity links
 tagger.predict(sentence)
 
-# print sentence with predicted tags
-print(sentence)
+# iterate over predicted entities and print
+for label in sentence.get_labels():
+    print(label)
 ```
 
 This should print:
 ```console
-Sentence[12]: "Bayern played against Barcelona. The match took place in Barcelona." → ["Bayern"/FC_Bayern_Munich, "Barcelona"/FC_Barcelona, "Barcelona"/Barcelona]
+Span[0:1]: "Kirk" → James_T._Kirk (0.9969)
+Span[2:3]: "Spock" → Spock (0.9971)
+Span[6:7]: "Enterprise" → USS_Enterprise_(NCC-1701-D) (0.975)
 ```
 
 As we can see, the linker can resolve what the two mentions of "Barcelona" refer to: 
-- the first mention "Barcelona" is linked to "FC_Barcelona" 
-- the second mention "Barcelona" is linked to "Barcelona"
+- "Kirk" refers to the entity "[James_T._Kirk](https://en.wikipedia.org/wiki/James_T._Kirk)"
+- "Spock" refers to "[Spock](https://en.wikipedia.org/wiki/Spock)" (ok, that one was easy)
+- "Enterprise" refers to the "[USS_Enterprise_(NCC-1701-D)](https://en.wikipedia.org/wiki/USS_Enterprise_(NCC-1701-D))" 
 
-Additionally, the mention "Bayern" is linked to "FC_Bayern_Munich", telling us that here the football club is meant.
-
-
-
-## Understanding and Accessing Annotations (important!)
-
-You can access each prediction individually using the `get_labels()` method. 
-
-```python
-from flair.nn import Classifier
-from flair.data import Sentence
-
-# load the model
-tagger = Classifier.load('linker')
-
-# make a sentence
-sentence = Sentence('Bayern played against Barcelona. The match took place in Barcelona.')
-
-# predict NER tags
-tagger.predict(sentence)
-```
-
-Use the `get_labels()` method to iterate over all predictions. Direct access each label's value (predicted tag)
-and its confidence score.
-
-```python
-# Use the `get_labels()` method to iterate over all predictions. 
-for label in sentence.get_labels():
-    print(label)
-    # print label value and score
-    print(f'label.value is: "{label.value}"')
-    print(f'label.score is: "{label.score}"')
-```
-
-This should print:
-
-```console
-Span[0:1]: "Bayern" → FC_Bayern_Munich (0.7778)
-label.value is: "FC_Bayern_Munich"
-label.score is: "0.7777503132820129"
-
-Span[3:4]: "Barcelona" → FC_Barcelona (0.9983)
-label.value is: "FC_Barcelona"
-label.score is: "0.9983417987823486"
-
-Span[10:11]: "Barcelona" → Barcelona (1.0)
-label.value is: "Barcelona"
-label.score is: "0.999983549118042"
-```
+ Not bad, eh? However, that last prediction is not quite correct as Star Trek fans will know. Entity linking is a hard task and we are working to improve the accuracy of our model.
 
 
-## Tagging a Whole Text Corpus
 
-Often, you may want to tag an entire text corpus. In this case, you need to split the corpus into sentences and pass a
-list of `Sentence` objects to the `.predict()` method.
+## Example 2: Entity linking on a text document (multiple sentences)
 
-For instance, you can use the sentence splitter of segtok to split your text:
+Entity linking typically works best when applied to a whole document instead of only a single sentence.
+
+To illustrate how this works, let's use the following short text: "_Bayern played against Barcelona. The match took place in Barcelona._"
+
+In this case, split the text into sentences and pass a list of Sentence objects to the .predict() method:
 
 ```python
 from flair.nn import Classifier
@@ -119,13 +78,14 @@ for sentence in sentences:
 ```
 
 This should print: 
-
 ```console
 Sentence[5]: "Bayern played against Barcelona." → ["Bayern"/FC_Bayern_Munich, "Barcelona"/FC_Barcelona]
 Sentence[7]: "The match took place in Barcelona." → ["Barcelona"/Barcelona]
 ```
 
-Using the `mini_batch_size` parameter of the `.predict()` method, you can set the size of mini batches passed to the
-tagger. Depending on your resources, you might want to play around with this parameter to optimize speed.
+As we can see, the linker can resolve that:
 
+- "Bayern" refers to the soccer club "[FC Bayern Munich](https://en.wikipedia.org/wiki/FC_Bayern_Munich)"
+- the first mention of "Barcelona" refers to the soccer club "[FC Barcelona](https://en.wikipedia.org/wiki/FC_Barcelona)"
+- the second mention of "Barcelona" refers to the city of "[Barcelona](https://en.wikipedia.org/wiki/Barcelona)"
 

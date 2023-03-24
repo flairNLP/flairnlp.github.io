@@ -1,30 +1,17 @@
 ---
 sidebar_position: 3
-description: This is the **entity tagging** tutorial :D
+description: This is the entity tagging tutorial
 ---
 
 # Tagging entities 
 
-This is the **entity tagging** tutorial. 
+This tutorials shows you how to do named entity recognition, showcases various NER models, and provides a full list of all NER models in Flair.
 
-:::tip My tip
+## Tagging entities with our standard model​
 
-Use this awesome feature option
+Our standard model uses Flair embeddings and was trained over the English CoNLL-03 task and can recognize 4 different entity types. It offers a good tradeoff between accuracy and speed.
 
-:::
-
-:::danger Take care
-
-This action is dangerous
-
-:::
-
-## Tagging Entities with Our Standard Model
-
-Our standard model uses Flair embeddings and was trained over the English CoNLL-03 task and can recognize 4 different entity
-types. It offers a good tradeoff between accuracy and speed.
-
-Let's use a sentence with two named entities:
+As example, let's use the sentence "_George Washington went to Washington._": 
 
 ```python
 from flair.nn import Classifier
@@ -48,13 +35,11 @@ This should print:
 Sentence: "George Washington went to Washington ." → ["George Washington"/PER, "Washington"/LOC]
 ```
 
-Showing us that two entities are labeled in this sentence: "George Washington" as PER (person) and "Washington"
-as LOC (location.)
+The printout tells us that two entities are labeled in this sentence: "George Washington" as PER (person) and "Washington" as LOC (location).
 
-## Tagging Entities with Our Best Model
+## Tagging entities with our best model​
 
-Our best 4-class model is trained using a very large transformer. Use it if accuracy is the most important to you, and 
-speed/memory not so much. 
+Our best 4-class model is trained using a very large transformer. Use it if accuracy is the most important to you, and speed/memory not so much. 
 
 ```python
 from flair.data import Sentence
@@ -76,9 +61,11 @@ print(sentence)
 As you can see, it's the same code, just with '**ner-large**' as model instead of '**ner**'. 
 This model also works with most languages. 
 
-*Hint: If you want the fastest model we ship, you can also try 'ner-fast'.*
+:::hint
+If you want the fastest model we ship, you can also try 'ner-fast'.
+:::
 
-## Tagging Entities in Non-English Text
+## Tagging entities in non-English text
 
 We also have NER models for text in other languages. 
 
