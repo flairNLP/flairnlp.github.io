@@ -1,5 +1,6 @@
 ---
-sidebar_position: 2
+sidebar_position: 4
+description: Classic word embeddings (still sometimes useful!)
 ---
 
 # Classic Word Embeddings
