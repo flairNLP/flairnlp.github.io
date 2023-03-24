@@ -89,12 +89,9 @@ Transformer document embeddings are the most important concept in Flair. Check o
 
 ## How to Stack Embeddings
 
-Stacked embeddings are one of the most important concepts of this library. You can use them to combine different
-embeddings together, for instance if you want to use both traditional embeddings together with contextual string
-embeddings. Stacked embeddings allow you to mix and match. We find that a combination of embeddings gives best results, when not fine-tuning.
+Flair allows you to combine embeddings into "embedding stacks". When not fine-tuning, using combinations of embeddings often gives best results!
 
-All you need to do is use the `StackedEmbeddings` class and instantiate it by passing a list of embeddings that you wish
-to combine. For instance, lets combine classic GloVe embeddings with forward and backward Flair embeddings. This is a combination that we generally recommend to most users, especially for sequence labeling.
+Use the `StackedEmbeddings` class and instantiate it by passing a list of embeddings that you wish to combine. For instance, lets combine classic GloVe embeddings with forward and backward Flair embeddings. 
 
 First, instantiate the two embeddings you wish to combine:
 

@@ -79,7 +79,7 @@ const config = {
             label: 'Tutorial',
           },
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/markdown-page', label: 'Demo', position: 'left'},
+          {to: '/demo', label: 'Demo', position: 'left'},
           {
             href: 'https://github.com/flairnlp/flair',
             label: 'GitHub',
@@ -103,16 +103,16 @@ const config = {
             title: 'Community',
             items: [
               {
-                label: 'Stack Overflow (TODO)',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                label: 'Stack Overflow',
+                href: 'https://stackoverflow.com/questions/tagged/flair',
               },
               {
-                label: 'Discord (TODO)',
-                href: 'https://discordapp.com/invite/docusaurus',
+                label: 'Huggingface',
+                href: 'https://huggingface.co/models?library=flair&sort=downloads',
               },
               {
-                label: 'Twitter (TODO)',
-                href: 'https://twitter.com/docusaurus',
+                label: 'GitHub',
+                href: 'https://github.com/flairnlp/flair',
               },
             ],
           },
@@ -124,13 +124,17 @@ const config = {
                 to: '/blog',
               },
               {
-                label: 'GitHub',
-                href: 'https://github.com/flairnlp/flair',
+                label: 'Twitter',
+                href: 'https://twitter.com/alan_akbik',
+              },
+              {
+                label: 'LinkedIn',
+                href: 'https://www.linkedin.com/in/alan-akbik-9859b1122/',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Flair T. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Alan Akbik. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
