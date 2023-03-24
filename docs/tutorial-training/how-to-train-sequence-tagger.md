@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 description: How to train a sequence tagger
 ---
 
@@ -10,7 +10,7 @@ part-of-speech (PoS) tagging.
 
 This tutorial section show you how to train state-of-the-art NER models and other taggers in Flair.
 
-## Training a Named Entity Recognition (NER) Model with Transformers
+## Training a named entity recognition (NER) model with transformers
 
 For a state-of-the-art NER sytem you should fine-tune transformer embeddings, and use full document context
 (see our [FLERT](https://arxiv.org/abs/2011.06993) paper for details). 
@@ -72,7 +72,7 @@ This will give you state-of-the-art numbers similar to the ones reported
 in [Schweter and Akbik (2021)](https://arxiv.org/abs/2011.06993). 
 
 
-## Training a Named Entity Recognition (NER) Model with Flair Embeddings
+## Training a named entity recognition (NER) model with Flair embeddings
 
 Alternatively to fine-tuning a very large transformer, you can use a classic training setup without fine-tuning.
 In the classic setup, you learn a LSTM-CRF on top of frozen embeddings. We typically use a 'stack' that combines
@@ -125,7 +125,7 @@ The numbers are not quite as high as fine-tuning transformers, but it requires l
 setup may run faster in the end. 
 
 
-## Training a Part-of-Speech Tagging Model
+## Training a part-of-speech tagger
 
 If you want to train a part-of-speech model instead of NER, simply exchange the corpus and the label type: 
 
@@ -173,7 +173,7 @@ trainer.train('resources/taggers/example-upos',
 
 This script will give you the state-of-the-art accuracy reported in [Akbik et al. (2018)](https://aclanthology.org/C18-1139.pdf).
 
-## Multi-Dataset Training
+## Multi-dataset training
 
 Now, let us train a single model that can PoS tag text in both English and German. To do this, we load both the English
 and German UD corpora and create a MultiCorpus object. We also use the new multilingual Flair embeddings for this task.

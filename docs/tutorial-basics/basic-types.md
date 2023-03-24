@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+description: Brief illustration of the most important basic concepts in Flair
 ---
 
 # Basics

@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-description: This is the entity tagging tutorial
+description: Named entity recognition (NER) with Flair
 ---
 
 # Tagging entities 

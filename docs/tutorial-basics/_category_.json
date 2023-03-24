@@ -3,6 +3,6 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "This tutorial walks you through all you need to tag your text"
+    "description": "This tutorial shows you in more detail how to tag your text and access predictions, and showcases various models we ship with Flair."
   }
 }

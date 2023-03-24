@@ -1,6 +1,6 @@
 ---
 sidebar_position: 9
-description: More models
+description: How to tag a big text corpus
 ---
 
 # How to tag a whole corpus

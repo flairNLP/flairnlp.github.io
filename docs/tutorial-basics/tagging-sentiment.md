@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-description: How to do sentiment analysis on your text
+description: Sentiment analysis with Flair
 ---
 
 

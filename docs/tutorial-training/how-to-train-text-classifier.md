@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 description: How to train a text classifier
 ---
 
@@ -9,7 +9,7 @@ This tutorial shows you how to train your own text classifier models with Flair.
 could train your own sentiment analysis model, or offensive language detection model.
 
 
-## Training a Text Classification Model with Transformers
+## Training a text classification model with transformers
 
 For text classification, you reach state-of-the-art scores by fine-tuning a transformer. 
 

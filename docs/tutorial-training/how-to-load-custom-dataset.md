@@ -1,13 +1,13 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 description: Load a custom dataset
 ---
 
-# How to load a custom datasetus
+# How to load a custom dataset
 
 This part of the tutorial shows how you can load a corpus for training a model. 
 
-## Reading a Dataset in Column Format
+## Reading a dataset in column format
 
 In cases you want to train over a sequence labeling dataset that is not in the above list, you can load them with the ColumnCorpus object.
 Most sequence labeling datasets in NLP use some sort of column format in which each line is a word and each column is
@@ -70,7 +70,7 @@ George <B-PER> Washington <I-PER> went to Washington <B-LOC> .
 Sam <N> Houston <N> stayed <V> home <N>
 ```
 
-## Reading a Text Classification Dataset
+## Reading a text classification dataset
 
 If you want to use your own text classification dataset, there are currently two methods to go about this:
 load specified text and labels from a simple CSV file or format your data to the
@@ -108,7 +108,7 @@ corpus: Corpus = CSVClassificationCorpus(data_folder,
 ```
 
 
-#### FastText Format
+#### FastText format
 If using `CSVClassificationCorpus` is not practical, you may format your data to the FastText format, in which each line in the file represents a text document. A document can have one or multiple labels that are defined at the beginning of the line starting with the prefix `__label__`. This looks like this:
 
 ```bash

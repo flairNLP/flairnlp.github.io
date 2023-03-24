@@ -6,73 +6,16 @@ description: How to do part-of-speech tagging in Flair
 
 # Tagging parts-of-speech
 
+This tutorials shows you how to do part-of-speech tagging in Flair, showcases univeral and language-specific models, and gives a list of all PoS models in Flair.
 
-## Tagging Universal Parts-of-Speech (UPOS) 
+## Language-specific parts-of-speech (PoS)
 
-Universal parts-of-speech are a set of minimal syntactic units that exist across languages. For instance, most languages
-will have VERBs or NOUNs. 
 
-To tag upos in **English**, do: 
+Syntax is fundamentally language-specific, so each language has different fine-grained parts-of-speech. Flair offers models for many languages:  
 
-```python
-from flair.nn import Classifier
-from flair.data import Sentence
+### ... in English
 
-# load the model
-tagger = Classifier.load('upos')
-
-# make a sentence
-sentence = Sentence('Dirk went to the store.')
-
-# predict NER tags
-tagger.predict(sentence)
-
-# print sentence with predicted tags
-print(sentence)
-```
-
-This should print:
-```console
-Sentence[6]: "Dirk went to the store." → ["Dirk"/PROPN, "went"/VERB, "to"/ADP, "the"/DET, "store"/NOUN, "."/PUNCT]
-```
-
-This indicates for instance that "went" is a VERB and that "store" is a NOUN.
-
-## Tagging Universal Parts-of-Speech (UPOS) in Multilingual Text
-
-We ship models trained over 14 langages to tag upos in **multilingual text**. Use like this: 
-
-```python
-from flair.nn import Classifier
-from flair.data import Sentence
-
-# load model
-tagger = Classifier.load('pos-multi')
-
-# text with English and German sentences
-sentence = Sentence('George Washington went to Washington. Dort kaufte er einen Hut.')
-
-# predict PoS tags
-tagger.predict(sentence)
-
-# print sentence with predicted tags
-print(sentence)
-```
-
-This should print (line breaks added for readability):
-```console
-Sentence: "George Washington went to Washington . Dort kaufte er einen Hut ."
-
-→ ["George"/PROPN, "Washington"/PROPN, "went"/VERB, "to"/ADP, "Washington"/PROPN, "."/PUNCT]
-
-→ ["Dort"/ADV, "kaufte"/VERB, "er"/PRON, "einen"/DET, "Hut"/NOUN, "."/PUNCT]
-```
-
-However note that they were trained for a mix of European languages and therefore will not work for other languages.
-
-## Tagging Language-Specific Parts-of-Speech (POS) in English
-
-Language-specific parts-of-speech are more fine-grained. For English, we offer several models trained over Ontonotes. 
+For English, we offer several models trained over Ontonotes. 
 
 Use like this:
 
@@ -98,11 +41,11 @@ This should print:
 Sentence[6]: "Dirk went to the store." → ["Dirk"/NNP, "went"/VBD, "to"/IN, "the"/DT, "store"/NN, "."/.]
 ```
 
-Look at the tag specification of the Penn Treebank to better understand what these tags mean. 
+This printout tells us for instance that "_Dirk_" is a proper noun (tag: NNP), and "_went_" is a past tense verb (tag: VBD).
 
-## Tagging Language-Specific Parts-of-Speech (POS) in Other Languages
-
-We ship with language-specific part-of-speech models for several languages. For instance:
+:::info
+To better understand what each tag means, consult the [tag specification](https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html) of the Penn Treebank.
+:::
 
 ### ... in German 
 
@@ -168,89 +111,43 @@ tagger.predict(sentence)
 print(sentence)
 ```
 
-## Understanding and Accessing Annotations (important!)
+## Tagging universal parts-of-speech (uPoS)​
 
-You can access each prediction individually using the `get_labels()` method. Let's use our standard UPOS example to 
-tag a sentence: 
+Universal parts-of-speech are a set of minimal syntactic units that exist across languages. For instance, most languages
+will have VERBs or NOUNs. 
+
+
+We ship models trained over 14 langages to tag upos in **multilingual text**. Use like this: 
 
 ```python
 from flair.nn import Classifier
 from flair.data import Sentence
 
-# load the model
-tagger = Classifier.load('upos')
+# load model
+tagger = Classifier.load('pos-multi')
 
-# make a sentence
-sentence = Sentence('George Washington went to Washington.')
+# text with English and German sentences
+sentence = Sentence('George Washington went to Washington. Dort kaufte er einen Hut.')
 
-# predict NER tags
+# predict PoS tags
 tagger.predict(sentence)
+
+# print sentence with predicted tags
+print(sentence)
 ```
 
-Use the `get_labels()` method to iterate over all predictions:
-
-```python
-for label in sentence.get_labels():
-    print(label)
-```
-
-This should print each token in the sentence, together with its part-of-speech tag:
-
+This should print (line breaks added for readability):
 ```console
-Token[0]: "George" → PROPN (0.9998)
-Token[1]: "Washington" → PROPN (1.0)
-Token[2]: "went" → VERB (1.0)
-Token[3]: "to" → ADP (1.0)
-Token[4]: "Washington" → PROPN (1.0)
-Token[5]: "." → PUNCT (1.0)
+Sentence: "George Washington went to Washington . Dort kaufte er einen Hut ."
+
+→ ["George"/PROPN, "Washington"/PROPN, "went"/VERB, "to"/ADP, "Washington"/PROPN, "."/PUNCT]
+
+→ ["Dort"/ADV, "kaufte"/VERB, "er"/PRON, "einen"/DET, "Hut"/NOUN, "."/PUNCT]
 ```
 
-As you can see, each entity is printed, together with the predicted class. The confidence of the prediction is indicated as a score in brackets.
+However note that they were trained for a mix of European languages and therefore will not work for other languages.
 
-For each prediction, you can directly access the label value, it's score and the token text:  
-
-```python
-# iterate over all labels in the sentence
-for label in sentence.get_labels():
-    # print label value and score
-    print(f'label.value is: "{label.value}"')
-    print(f'label.score is: "{label.score}"')
-    # access the data point to which label attaches and print its text
-    print(f'the text of label.data_point is: "{label.data_point.text}"\n')
-```
-
-
-## Tagging a Whole Text Corpus
-
-Often, you may want to tag an entire text corpus. In this case, you need to split the corpus into sentences and pass a
-list of `Sentence` objects to the `.predict()` method.
-
-For instance, you can use the sentence splitter of segtok to split your text:
-
-```python
-from flair.nn import Classifier
-from flair.splitter import SegtokSentenceSplitter
-
-# example text with many sentences
-text = "This is a sentence. This is another sentence. I love Berlin."
-
-# initialize sentence splitter
-splitter = SegtokSentenceSplitter()
-
-# use splitter to split text into list of sentences
-sentences = splitter.split(text)
-
-# predict tags for sentences
-tagger = Classifier.load('upos')
-tagger.predict(sentences)
-
-# iterate through sentences and print predicted labels
-for sentence in sentences:
-    print(sentence)
-```
-
-Using the `mini_batch_size` parameter of the `.predict()` method, you can set the size of mini batches passed to the
-tagger. Depending on your resources, you might want to play around with this parameter to optimize speed.
+## Tagging Language-Specific Parts-of-Speech (POS) in English
 
 
 ## List of POS Models

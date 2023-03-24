@@ -1,5 +1,6 @@
 ---
 sidebar_position: 2
+description: .. and what kind of information you can get from each prediction
 ---
 
 # How predictions work
