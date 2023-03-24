@@ -3,16 +3,16 @@ sidebar_position: 2
 description: How model training works in Flair
 ---
 
-
 # How model training works in Flair
 
-In Flair, all models are trained the same way using the ModelTrainer. This tutorial illustrates 
-how the ModelTrainer works and what decisions you have to make to train good models. 
+In this section, we explain the main ideas of model training in Flair.
 
+In particular, we give an introduction to the `ModelTrainer` class, and discuss what decisions you have to make to train good models.
 
-## Example: Training a Part-of-Speech Tagger 
+## Example: Training a Part-of-Speech Tagger
 
 As example in this chapter, we train a simple part-of-speech tagger for English. To make the example run fast
+
 - we downsample the training data to 10%
 - we use only simple classic word embeddings (gloVe)
 
@@ -54,12 +54,11 @@ trainer.train('resources/taggers/example-upos',
               max_epochs=10)
 ```
 
-This code (1) loads the English universal dependencies dataset as training corpus, (2) create a label dictionary for
-universal part-of-speech tags from the corpus, (3) initializes embeddings and (4) runs the trainer for 10 epochs. 
+This code (1) loads the English universal dependencies dataset as training corpus, (2) create a label dictionary for universal part-of-speech tags from the corpus, (3) initializes embeddings and (4) runs the trainer for 10 epochs.
 
-Running this script should produce output that looks like this during training: 
+Running this script should produce output that looks like this during training:
 
-```console
+```
 2023-02-27 17:07:38,014 ----------------------------------------------------------------------------------------------------
 2023-02-27 17:07:38,016 Model training base path: "resources/taggers/example-upos"
 2023-02-27 17:07:38,017 ----------------------------------------------------------------------------------------------------
@@ -85,9 +84,9 @@ Running this script should produce output that looks like this during training:
 
 The output monitors the loss over the epochs. At the end of each epoch, the development score is computed and printed.
 
-And a **final evaluation report** gets printed in the end: 
+And a **final evaluation report** gets printed in the end:
 
-```console
+```
 Results:
 - F-score (micro) 0.7732
 - F-score (macro) 0.6329
@@ -119,62 +118,106 @@ By class:
 weighted avg     0.7635    0.7732    0.7655      2491
 ```
 
-This report gives us a breakdown of the precision, recall and F1 score of all classes, as well as overall. 
+This report gives us a breakdown of the precision, recall and F1 score of all classes, as well as overall.
 
 Congrats, you just trained your first model!
 
-## Step-By-Step Walkthrough
 
-The above code showed you how to train a PoS tagger. 
+## Step-by-step walkthrough
 
-Now let's look at each of the main steps in the above script:  
+The above code showed you how to train a part-of-speech tagger.
 
-### Step 1: Loading the Corpus 
+Now let's individually look at each of the main steps in the above script:
 
-In this example, we use the English Universal Dependencies Dataset to train on. It contains many sentences fully annotated
-with both universal and language-specific part-of-speech tags. Running these lines will load and print the corpus: 
+### Step 1: Load a Corpus
+
+The first thing you need is data to train and evaluate your model on.
+
+In Flair, training is done using the `Corpus` object that holds three "splits": a `train`, a `dev` and a `test` split.
+
+:::info
+
+Splitting your data into three splits is standard procedure in machine learning: the `train` split is used to train the model while the `dev` split is used for model selection and early stopping. The `test` split is used only for the final evaluation.
+:::
+
+In this example, we use the <a href="https://universaldependencies.org/treebanks/en_ewt/index.html">English Universal Dependencies</a> dataset to train on. It contains many sentences fully annotated with both universal and language-specific part-of-speech tags. Running these lines will load and print the corpus:
 
 ```python
+# 1. load the corpus
 corpus = UD_ENGLISH().downsample(0.1)
 print(corpus)
 ```
 
 which should print:
-```console
+
+```
 Corpus: 1254 train + 200 dev + 208 test sentences
 ```
 
 Showing us that our downsampled training data has three splits: a training split of 1254 sentences, a dev split of 200 sentences, and a test split of 208 sentences.
 
-The **Corpus** is a very handy concept in Flair, with lots of helper functions. To learn all that it can do, check out ...
+:::tip
+The `Corpus` object has a number of very handy helper functions that let you manipulate the data and compute statistics. For instance, in the code above we called `.downsample(0.1)` to downsample the corpus to 10% of its original size. To learn about more helper functions, check out the corpus tutorial.
+:::
 
-### Step 2: Creating a Label Dictionary 
+### Step 2: Choose the label type
 
-Our model needs to predict a set of labels. To determine the label set, run make_label_dictionary on the corpus 
-and pass the label type you want to predict. In this example, we pass upos since we want to predict universal 
-part-of-speech tags. 
+After you load the corpus, you need to decide which label type to predict.
 
-Running these lines will compute and print the label dictionary from the corpus: 
+We choose the label type **'upos'**, since we want to predict universal part-of-speech tags in this example.
 
 ```python
+# 2. what label do we want to predict?
+label_type = 'upos'
+```
+
+:::info
+
+You might ask: why is specifying the `label_type` even necessary? Well, some corpora have more than one label type. The English UD treebank for instance has both universal PoS tags ('upos') and regular PoS tags ('pos'), plus many other layers of annotation. A tagger is normally trained to predict just type of annotation.
+
+This means that you need to know which label types a specific corpus has labels for, and choose one of them.
+:::
+
+
+### Step 3: Creating a label dictionary
+
+Our model needs to predict a set of labels. To determine the label set, run `make_label_dictionary` on the corpus and pass the label type you want to predict. In this example, we pass **'upos'** since we want to predict universal part-of-speech tags.
+
+Running these lines will compute and print the label dictionary from the corpus:
+
+```python
+# 3. make the label dictionary from the corpus
 label_dict = corpus.make_label_dictionary(label_type=label_type)
 print(label_dict)
 ```
 
 which should print:
-```console
+
+```
 Dictionary with 18 tags: <unk>, NOUN, PUNCT, VERB, PRON, ADP, DET, AUX, ADJ, PROPN, ADV, CCONJ, PART, SCONJ, NUM, X, SYM, INTJ
 ```
 
-Showing us that our label dictionary has 18 PoS tags, including one generic tag for all unknown labels.
+Showing us that our label dictionary has 18 PoS tags, including one generic tag (`<unk>`) for all unknown labels.
 
-### Step 3: Initialize the Model
+### Step 4: Initialize embeddings
 
-Depending on what you want to do, you need to initialize the appropriate model type. For sequence labeling 
-(NER, part-of-speech tagging) you need the `SequenceLabeler`. For text classification you need the `TextClassifier.`
-For each model type, we are creating dedicated tutorials to better explain what they do.
+All models in Flair require you to choose embeddings. In most cases, you'll want transformer embeddings. Choosing the right embeddings and parameters is crucial in order to train good models.
 
-For this example, we use the SequenceLabeler since we do part-of-speech tagging: 
+In our example, we use simple GloVe embeddings:
+
+
+```python
+# 4. initialize embeddings
+embeddings = WordEmbeddings('glove')
+```
+
+But this is only to make the example code run fast. We generally advise to use transformer-based embeddings instead.
+
+### Step 5: Initialize the Model
+
+Depending on what you want to do, you need to initialize the appropriate model type.
+
+For this example, we use the `SequenceLabeler` since we do part-of-speech tagging:
 
 ```python
 # 5. initialize sequence tagger
@@ -184,35 +227,46 @@ model = SequenceTagger(hidden_size=256,
                        tag_type=label_type)
 ```
 
-Printing it will give you the PyTorch model that is initialized. 
+Printing it will give you the PyTorch model that is initialized.
 
-### Step 4: Initialize the Trainer
+:::info
+
+Depending on the task, you need a different model type: For sequence labeling (NER, part-of-speech tagging) you need the `SequenceLabeler`. For text classification you need the `TextClassifier`.
+
+For each model type, we are creating dedicated tutorials to better explain what they do.
+:::
+
+### Step 6: Initialize the Trainer
 
 The ModelTrainer is initialized simply by passing the model and the corpus because that is all it needs.
 
 ```python
+# 6. initialize trainer
 trainer = ModelTrainer(model, corpus)
 ```
 
-### Step 5: Train
+### Step 7: Train
 
-Once the trainer is initialized, you can call `train` to launch a standard training run. 
+Once the trainer is initialized, you can call `train` to launch a standard training run.
 
 ```python
+# 7. start training
 trainer.train('resources/taggers/example-upos',
               learning_rate=0.1,
               mini_batch_size=32,
               max_epochs=10)
 ```
 
-This will launch a "standard training run" with SGD as optimizer. By default, the learning rate is annealed against the development score: if 
-fo 3 epochs there is no improvement on the dev split, the learning rate is halved. If this happens too often, the learning rate will fall below
-a minimal threshold and training stops early. 
+This will launch a "standard training run" with SGD as optimizer. By default, the learning rate is annealed against the development score: if fo 3 epochs there is no improvement on the dev split, the learning rate is halved. If this happens too often, the learning rate will fall below a minimal threshold and training stops early.
 
-The max_epochs parameter is set to a small number in this script to make it run fast, but normally you should use a much higher value (150 or 200). 
+The max_epochs parameter is set to a small number in this script to make it run fast, but normally you should use a much higher value (150 or 200).
 
+:::info
 
-### Step 6: Predict
+There are two main mechanisms to train a model in Flair. (1) The "classic" workflow (SGD with annealing) is invoked as above using the `train()` method. (2) The current state-of-the-art based on fine-tuning (AdamW with One-Cycle) is invoked using the `fine_tune()` method. In most cases, you will want to use the latter.
+:::
+
+### Step 8: Predict
 
 Once the model is trained you can use it to predict tags for new sentences. Just call the `predict` method of the model.
 
@@ -231,7 +285,16 @@ print(sentence.to_tagged_string())
 
 If the model works well, it will correctly tag 'love' as a verb in this example.
 
+## Summary
 
-## Training vs Fine-Tuning
+This tutorial gave you a general overview of the main steps to train a model:
+
+-    load a corpus
+-    choose a label type
+-    create a label dictionary
+-    choose embeddings
+-    initialize model
+-    initialize trainer
+-    train
 
 

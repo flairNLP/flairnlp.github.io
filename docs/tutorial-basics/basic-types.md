@@ -4,14 +4,21 @@ sidebar_position: 1
 
 # Basics
 
-We first explain the base types used in this library.
+This tutorial explains the basic concepts used in Flair:
 
-## Creating a Sentence
+-    what is a `Sentence`
+-    what is a `Label`
 
-There are two types of objects that are central to this library, namely the `Sentence` and `Token` objects. A
-`Sentence` holds a textual sentence and is essentially a list of `Token`.
+You should be familiar with these two concepts in order to get the most out of Flair.
 
-Let's start by making a `Sentence` object for an example sentence.
+## What is a Sentence
+
+If you want to tag a sentence, you need to first make a `Sentence` object for it.
+
+For example, say you want to tag the text "_The grass is green._".
+
+Let's start by making a `Sentence` object for this sentence.
+
 
 ```python
 # The sentence objects holds a sentence that we may want to embed or tag
@@ -31,23 +38,17 @@ Sentence[5]: "The grass is green."
 ```
 
 The print-out tells us that the sentence consists of 5 tokens.
-You can access the tokens of a sentence via their token id or with their index:
 
-```python
-# using the token id
-print(sentence.get_token(4))
-# using the index itself
-print(sentence[3])
-```
+:::info
+A token is an atomic unit of the text, often a word or punctuation. The printout is therefore telling us that the sentence "_The grass is green._" consists of 5 such atomic units. 
+:::
 
-which should print in both cases
+### Iterating over the tokens in a Sentence
 
-```console
-Token[3]: "green"
-```
+So what are the 5 tokens in this example sentence?
 
-This print-out includes the token index (3) and the lexical value of the token ("green"). You can also iterate over all
-tokens in a sentence.
+You can iterate over all tokens in a sentence like this:
+
 
 ```python
 for token in sentence:
@@ -64,24 +65,55 @@ Token[3]: "green"
 Token[4]: "."
 ```
 
-## Tokenization
+This printout is telling us that the 5 tokens in the text are the words "_The_", "_grass_", "_is_", "_green_", with a separate token for the full stop at the end. The tokens therefore correspond to the words and the punctuation of the text.
 
-When you create a `Sentence` as above, the text is automatically tokenized (segmented into words)
-using [segtok](https://pypi.org/project/segtok/). 
+### Directly accessing a token
 
-## Adding Labels
-
-In Flair, any data point can be labeled. For instance, you can label a word or label a sentence:
-
-### Adding labels to tokens
-
-A `Token` has fields for linguistic annotation, such as lemmas, part-of-speech tags or named entity tags. You can
-add a tag by specifying the tag type and the tag value. In this example, we're adding an NER tag of type 'color' to
-the word 'green'. This means that we've tagged this word as an entity of type color.
+You can access the tokens of a sentence via their token id or with their index:
 
 ```python
-# add a tag to a word in the sentence
-sentence[3].set_label('ner', 'color')
+# using the token id
+print(sentence.get_token(4))
+# using the index itself
+print(sentence[3])
+```
+
+which should print in both cases
+
+```console
+Token[3]: "green"
+```
+
+This print-out includes the token index (3) and the lexical value of the token ("green"). 
+
+### Tokenization
+
+When you create a `Sentence` as above, the text is automatically tokenized (segmented into words) using the [segtok](https://pypi.org/project/segtok/) library.
+
+
+:::info
+You can also use a different tokenizer if you like. To learn more about this, check out our tokenization tutorial.
+:::
+
+
+## What is a Label
+
+All Flair models predict labels. For instance, our sentiment analysis models will predict labels for a sentence. Our NER models will predict labels for tokens in a sentence.
+
+### Example 1: Labeling a token in a sentence
+
+To illustrate how labels work, let's use the same example sentence as above: "_The grass is green._".
+
+Let us label all "color words" in this sentence. Since the sentence contains only one color word (namely "green"), we only need to add a label to one of the tokens.
+
+We access token 3 in the sentence, and set a label for it: 
+
+```python
+# Make a sentence object by passing a string
+sentence = Sentence('The grass is green.')
+
+# add an NER tag to token 3 in the sentence
+sentence[3].add_label('ner', 'color')
 
 # print the sentence (now with this annotation)
 print(sentence)
@@ -113,135 +145,130 @@ Token[4]: "."
 
 This shows that there are 5 tokens in the sentence, one of which has a label.
 
-### Accessing Label information
+:::info
+The `add_label` method used here has two mandatory parameters.
+:::
 
-Each label is of class `Label` which next to the value has a score indicating confidence. Print like this:
+### Example 2: Labeling a whole sentence
 
-```python
-# get and print token 3 in the sentence
-token = sentence[3]
-print(token)
+Sometimes you want to label an entire sentence instead of only a token. Do this by calling `add_label` for the whole sentence.
 
-# get the 'ner' label of the token
-label = token.get_label('ner')
-
-# print text and id fields of the token, and the value and score fields of the label
-print(f'token.text is: "{token.text}"')
-print(f'token.idx is: "{token.idx}"')
-print(f'label.value is: "{label.value}"')
-print(f'label.score is: "{label.score}"')
-```
-
-This should print:
-
-```console
-Token[3]: "green" → color (1.0)
-
-token.text is: "green"
-token.idx is: "4"
-label.value is: "color"
-label.score is: "1.0"
-```
-
-Our color tag has a score of 1.0 since we manually added it. If a tag is predicted by our
-sequence labeler, the score value will indicate classifier confidence.
-
-### Adding labels to sentences
-
-You can also add a `Label` to a whole `Sentence`.
-For instance, the example below shows how we add the label 'sports' to a sentence, thereby labeling it
-as belonging to the sports "topic".
+For example, say we want to add a sentiment label to the sentence "_The grass is green._":
 
 ```python
-sentence = Sentence('France is the current world cup winner.')
+sentence = Sentence('The grass is green.')
 
 # add a label to a sentence
-sentence.add_label('topic', 'sports')
-
-print(sentence)
-
-# Alternatively, you can also create a sentence with label in one line
-sentence = Sentence('France is the current world cup winner.').add_label('topic', 'sports')
+sentence.add_label('sentiment', 'POSITIVE')
 
 print(sentence)
 ```
 
 This should print:
 
-```console
-Sentence: "France is the current world cup winner ." → sports (1.0)
+```
+Sentence[5]: "The grass is green." → POSITIVE (1.0)
 ```
 
-Indicating that this sentence belongs to the topic 'sports' with confidence 1.0.
+Indicating that this sentence is now labeled as having a positive sentiment.
 
 ### Multiple labels
 
-Any data point can be labeled multiple times. A sentence for instance might belong to two topics. In this case, add two labels with the same label name:
+Importantly, in Flair you can add as many labels to a sentence as you like.
+
+Let's bring the two examples above together: We will label the sentence "_The grass is green._" with an overall positive sentiment, and also add a "color" tag to the token "grass":
 
 ```python
-sentence = Sentence('France is the current world cup winner.')
+sentence = Sentence('The grass is green.')
 
-# this sentence has multiple topic labels
-sentence.add_label('topic', 'sports')
-sentence.add_label('topic', 'soccer')
-```
+# add a sentiment label to the sentence
+sentence.add_label('sentiment', 'POSITIVE')
 
-You might want to add different layers of annotation for the same sentence. Next to topic you might also want to predict the "language" of a sentence. In this case, add a label with a different label name:
+# add an NER tag to token 3 in the sentence
+sentence[3].add_label('ner', 'color')
 
-```python
-sentence = Sentence('France is the current world cup winner.')
-
-# this sentence has multiple "topic" labels
-sentence.add_label('topic', 'sports')
-sentence.add_label('topic', 'soccer')
-
-# this sentence has a "language" label
-sentence.add_label('language', 'English')
-
+# print the sentence with all annotations
 print(sentence)
 ```
 
-This should print:
+This will print:
 
-```console
-Sentence: "France is the current world cup winner ." → sports (1.0); soccer (1.0); English (1.0)
+```
+Sentence[5]: "The grass is green." → POSITIVE (1.0) → ["green"/color]
 ```
 
-Indicating that this sentence now has three labels.
+Indicating that the sentence is now labeled with two different types of information.
 
-### Accessing a sentence's labels
+### Accessing labels
 
-You can access these labels like this:
+You can iterate through all labels of a sentence using the `.get_labels()` method:
 
 ```python
-for label in sentence.labels:
+# iterate over all labels and print
+for label in sentence.get_labels():
     print(label)
 ```
 
-Remember that each label is a `Label` object, so you can also access the label's `value` and `score` fields directly:
+This will get each label and print it. For instance, let's re-use the previous example in which we add two different labels to the same sentence:
 
 ```python
-print(sentence.to_plain_string())
-for label in sentence.labels:
-    print(f' - classified as "{label.value}" with score {label.score}')
+sentence = Sentence('The grass is green.')
+
+# add a sentiment label to the sentence
+sentence.add_label('sentiment', 'POSITIVE')
+
+# add an NER tag to token 3 in the sentence
+sentence[3].add_label('ner', 'color')
+
+# iterate over all labels and print
+for label in sentence.get_labels():
+    print(label)
+```
+
+This will now print the following two lines:
+
+```
+Sentence[5]: "The grass is green." → POSITIVE (1.0)
+Token[3]: "green" → color (1.0)
+```
+
+This printout tells us that there are two labels: The first is for the whole sentence, tagged as POSITIVE. The second is only for the token "green", tagged as "color".
+
+:::info
+
+If you only want to iterate over labels of a specific type, add the label name as parameter to get_labels(). For instance, to only iterate over all NER labels, do:
+
+```python
+# iterate over all NER labels only
+for label in sentence.get_labels('ner'):
+    print(label)
+```
+:::
+
+### Information for each label
+
+Each label is of class `Label` which next to the value has a score indicating confidence. It also has a pointer back to the data point to which it attaches.
+
+This means that you can print the value, the confidence and the labeled text of each label:
+
+```python
+sentence = Sentence('The grass is green.')
+
+# add an NER tag to token 3 in the sentence
+sentence[3].add_label('ner', 'color')
+
+# iterate over all labels and print
+for label in sentence.get_labels():
+
+    # Print the text, the label value and the label score
+    print(f'"{label.data_point.text}" is classified as "{label.value}" with score {label.score}')
 ```
 
 This should print:
 
-```console
-France is the current world cup winner.
- - classified as "sports" with score 1.0
- - classified as "soccer" with score 1.0
- - classified as "English" with score 1.0
+```
+"green" is classified as "color" with score 1.0
 ```
 
-If you are interested only in the labels of one layer of annotation, you can access them like this:
-
-```python
-for label in sentence.get_labels('topic'):
-    print(label)
-```
-
-Giving you only the "topic" labels.
-
+Our color tag has a score of 1.0 since we manually added it. If a tag is predicted by our sequence labeler, the score value will indicate classifier confidence.
 
