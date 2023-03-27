@@ -39,7 +39,7 @@ Sentence[8]: "This movie is not at all bad." → POSITIVE (0.9929)
 
 Showing us that the sentence overall is tagged to be of POSITIVE sentiment. 
 
-## Tagging sentiment with our fast model​
+## Tagging sentiment with our fast model
 
 We also offer an RNN-based variant which is faster but less accurate. Use it like this: 
 
