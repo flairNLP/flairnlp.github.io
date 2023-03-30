@@ -97,6 +97,10 @@ const config = {
                 label: 'Tutorial',
                 to: '/docs/intro',
               },
+              {
+                label: 'Blog',
+                to: '/blog',
+              },
             ],
           },
           {
@@ -117,11 +121,11 @@ const config = {
             ],
           },
           {
-            title: 'More',
+            title: 'Contact',
             items: [
               {
-                label: 'Blog',
-                to: '/blog',
+                label: 'Legal / Imprint',
+                to: '/contact',
               },
               {
                 label: 'Twitter',
@@ -134,7 +138,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Alan Akbik. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Alan Akbik. All rights reserved.`,
       },
       prism: {
         theme: lightCodeTheme,
