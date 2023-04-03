@@ -118,6 +118,35 @@ As we can see, the linker can resolve that:
 
 Not bad, eh? However, that last prediction is not quite correct as fans of Star Trek will know. Entity linking is a hard task and we are working to improve the accuracy of our model.
 
+## New Tagger: Multilingual Frames
+
+As of Flair 0.12.2 we als include a first **multilingual frame tagger** trained on a mix of data including three languages from the [Universal Proposition Banks](https://universalpropositions.github.io/). This makes our frame detection more robust to other languages. 
+
+To illustrate, let's use a German example sentence "_Dirk trug einen Koffer und trug einen Hut._" with the **frame-large** model:
+
+```python
+# load the large frame model
+model = Classifier.load('frame-large')
+
+# German sentence with the verb "trug" in two different senses
+sentence_de = Sentence("Dirk trug einen Koffer und trug einen Hut.")
+
+# predict frames
+model.predict(sentence_de)
+
+# print predictions
+print(sentence_de) 
+```
+
+This should print:
+
+```
+Sentence[9]: "Dirk trug einen Koffer und trug einen Hut." → ["trug"/carry.01, "trug"/wear.01]
+```
+
+This output tells us that the first instance of the verb "_trug_" is meant in the sense of _carrying something_ (in this case, a suitcase). The second instance of the verb "_trug_" is meant in the sense of _wearing something_ (in this case, a suitcase).
+
+
 ## New Language: Support for Ukrainian
 
 This version adds support for Ukrainian taggers, embeddings and datasets. For instance, to do named entity tagging of a Ukrainian sentence, do:
