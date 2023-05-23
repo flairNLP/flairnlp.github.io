@@ -38,7 +38,7 @@ Span[2:3]: "Spock" → Spock (0.9971)
 Span[6:7]: "Enterprise" → USS_Enterprise_(NCC-1701-D) (0.975)
 ```
 
-As we can see, the linker can resolve what the two mentions of "Barcelona" refer to: 
+As we can see, the linker can resolve that:
 - "Kirk" refers to the entity "[James_T._Kirk](https://en.wikipedia.org/wiki/James_T._Kirk)"
 - "Spock" refers to "[Spock](https://en.wikipedia.org/wiki/Spock)" (ok, that one was easy)
 - "Enterprise" refers to the "[USS_Enterprise_(NCC-1701-D)](https://en.wikipedia.org/wiki/USS_Enterprise_(NCC-1701-D))" 
@@ -83,7 +83,7 @@ Sentence[5]: "Bayern played against Barcelona." → ["Bayern"/FC_Bayern_Munich, 
 Sentence[7]: "The match took place in Barcelona." → ["Barcelona"/Barcelona]
 ```
 
-As we can see, the linker can resolve that:
+As we can see, the linker can resolve what the two mentions of "Barcelona" refer to: 
 
 - "Bayern" refers to the soccer club "[FC Bayern Munich](https://en.wikipedia.org/wiki/FC_Bayern_Munich)"
 - the first mention of "Barcelona" refers to the soccer club "[FC Barcelona](https://en.wikipedia.org/wiki/FC_Barcelona)"
